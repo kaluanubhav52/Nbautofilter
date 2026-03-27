@@ -722,6 +722,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             out.seek(0)
             
             btn = [[
+				InlineKeyboardButton('✅ I have Paid✅', callback_data=f"sub_id_{amount}")
+			],[
                 InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʟᴀɴꜱ ⇋', callback_data='buy_info')
             ]]
             
