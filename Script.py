@@ -181,59 +181,67 @@ class script(object):
 ᴀʟʟ ᴛʜᴇ ꜰɪʟᴇꜱ ɪɴ ᴛʜɪꜱ ʙᴏᴛ ᴀʀᴇ ꜰʀᴇᴇʟʏ ᴀᴠᴀɪʟᴀʙʟᴇ ᴏɴ ᴛʜᴇ ɪɴᴛᴇʀɴᴇᴛ ᴏʀ ᴘᴏꜱᴛᴇᴅ ʙʏ ꜱᴏᴍᴇʙᴏᴅʏ ᴇʟꜱᴇ. ᴊᴜꜱᴛ ꜰᴏʀ ᴇᴀꜱʏ ꜱᴇᴀʀᴄʜɪɴɢ ᴛʜɪꜱ ʙᴏᴛ ɪꜱ ɪɴᴅᴇxɪɴɢ ꜰɪʟᴇꜱ ᴡʜɪᴄʜ ᴀʀᴇ ᴀʟʀᴇᴀᴅʏ ᴜᴘʟᴏᴀᴅᴇᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ. ᴡᴇ ʀᴇꜱᴘᴇᴄᴛ ᴀʟʟ ᴛʜᴇ ᴄᴏᴘʏʀɪɢʜᴛ ʟᴀᴡꜱ ᴀɴᴅ ᴡᴏʀᴋꜱ ɪɴ ᴄᴏᴍᴘʟɪᴀɴᴄᴇ ᴡɪᴛʜ ᴅᴍᴄᴀ ᴀɴᴅ ᴇᴜᴄᴅ. ɪꜰ ᴀɴʏᴛʜɪɴɢ ɪꜱ ᴀɢᴀɪɴꜱᴛ ʟᴀᴡ ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴍᴇ ꜱᴏ ᴛʜᴀᴛ ɪᴛ ᴄᴀɴ ʙᴇ ʀᴇᴍᴏᴠᴇᴅ ᴀꜱᴀᴘ. ɪᴛ ɪꜱ ꜰᴏʀʙɪᴅᴅᴇɴ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ, ꜱᴛʀᴇᴀᴍ, ʀᴇᴘʀᴏᴅᴜᴄᴇ, ꜱʜᴀʀᴇ ᴏʀ ᴄᴏɴꜱᴜᴍᴇ ᴄᴏɴᴛᴇɴᴛ ᴡɪᴛʜᴏᴜᴛ ᴇxᴘʟɪᴄɪᴛ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ꜰʀᴏᴍ ᴛʜᴇ ᴄᴏɴᴛᴇɴᴛ ᴄʀᴇᴀᴛᴏʀ ᴏʀ ʟᴇɢᴀʟ ᴄᴏᴘʏʀɪɢʜᴛ ʜᴏʟᴅᴇʀ. ɪꜰ ʏᴏᴜ ʙᴇʟɪᴇᴠᴇ ᴛʜɪꜱ ʙᴏᴛ ɪꜱ ᴠɪᴏʟᴀᴛɪɴɢ ʏᴏᴜʀ ɪɴᴛᴇʟʟᴇᴄᴛᴜᴀʟ ᴘʀᴏᴘᴇʀᴛʏ, ᴄᴏɴᴛᴀᴄᴛ ᴛʜᴇ ʀᴇꜱᴘᴇᴄᴛɪᴠᴇ ᴄʜᴀɴɴᴇʟꜱ ꜰᴏʀ ʀᴇᴍᴏᴠᴀʟ. ᴛʜᴇ ʙᴏᴛ ᴅᴏᴇꜱ ɴᴏᴛ ᴏᴡɴ ᴀɴʏ ᴏꜰ ᴛʜᴇꜱᴇ ᴄᴏɴᴛᴇɴᴛꜱ, ɪᴛ ᴏɴʟʏ ɪɴᴅᴇx ᴛʜᴇ ꜰɪʟᴇꜱ ꜰʀᴏᴍ ᴛᴇʟᴇɢʀᴀᴍ.
 </b>"""
 
-    PREMIUM_TEXT = """<b>💎 <u>ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴꜱ</u> 💎
+    # --- 1. Main Premium Welcome Text (/plan command) ---
+    BPREMIUM_TXT = """<b>🧧 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ᴍᴇɴᴜ 🧧</b>
 
-🗓️ 07 ᴅᴀʏꜱ  ➪  15 ₹ / 15 ⭐
-🗓️ 15 ᴅᴀʏꜱ  ➪  30 ₹ / 30 ⭐
-🗓️ 01 ᴍᴏɴᴛʜ ➪  60 ₹ / 60 ⭐
-🗓️ 02 ᴍᴏɴᴛʜꜱ ➪ 120 ₹ / 120 ⭐
-🗓️ 03 ᴍᴏɴᴛʜꜱ ➪ 220 ₹ / 220 ⭐
+Premium lene ke baad aapko milenge:
+🚀 <b>High Speed Access</b>
+🎥 <b>Premium Content</b>
+🚫 <b>No Ads / No Limits</b>
+✨ <b>Extra Features</b>
 
-📜 <a href='https://t.me/+blcE2jS-iGtkMjNl'>ᴄʜᴇᴄᴋ ᴘʀᴏᴏꜰꜱ</a>
+👇 Niche diye gaye button par click karke plan select karein."""
 
-⚠️ ɪᴍᴘᴏʀᴛᴀɴᴛ:
-1️⃣ ꜱᴇɴᴅ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀꜰᴛᴇʀ ᴘᴀʏᴍᴇɴᴛ.
-2️⃣ ᴡᴀɪᴛ ꜰᴏʀ ᴀᴅᴍɪɴ ᴄᴏɴꜰɪʀᴍᴀᴛɪᴏɴ ᴛᴏ ʙᴇ ᴀᴅᴅᴇᴅ.</b>"""
+    # --- 2. Plan Selection Menu ---
+    PREMIUM_TEXT = """<b>👋 Hello {}</b>
 
-    PREMIUM_STAR_TEXT = """<b><blockquote>ᴘᴀʏᴍᴇɴᴛ ᴍᴇᴛʜᴏᴅ: ᴛᴇʟᴇɢʀᴀᴍ ꜱᴛᴀʀꜱ ⭐</blockquote>
+<b>🌟 ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴs:</b>
+Yahan se aap apna pasandida plan select kar sakte hain. Payment karne ke liye kisi bhi ek plan par click karein:"""
 
-ɴᴏᴡ ʏᴏᴜ ᴄᴀɴ ʙᴜʏ ᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ ꜱᴇʀᴠɪᴄᴇ ᴜꜱɪɴɢ ᴛᴇʟᴇɢʀᴀᴍ ꜱᴛᴀʀꜱ.  
+    # --- 3. QR Code Page ---
+    QR_TEXT = """<b>✅ sᴄᴀɴ & ᴘᴀʏ ₹{}</b>
 
-ɪꜰ ʏᴏᴜ ꜰᴀᴄᴇ ᴀɴʏ ᴘʀᴏʙʟᴇᴍ, ᴛᴀᴋᴇ ᴀ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀɴᴅ ꜱᴇɴᴅ ɪᴛ ᴛᴏ - @SilentXBotz
+<b>ᴜᴘɪ ɪᴅ:</b> <code>{}</code>
 
-ꜱᴇʟᴇᴄᴛ ʏᴏᴜʀ ᴅᴇꜱɪʀᴇᴅ ᴀᴍᴏᴜɴᴛ ᴀɴᴅ ᴘᴜʀᴄʜᴀꜱᴇ ᴀ ꜱᴜʙꜱᴄʀɪᴘᴛɪᴏɴ 👇.</b>
-"""
+👇 <b>sᴛᴇᴘs:</b>
+1. Upar diye gaye QR ko scan karein ya UPI ID copy karein.
+2. Payment karne ke baad niche <b>'✅ I Have Paid'</b> button par click karein.
 
-    PREMIUM_UPI_TEXT = """<b><blockquote>ᴘᴀʏᴍᴇɴᴛ ᴍᴇᴛʜᴏᴅ: ᴜᴘɪ</blockquote>
+❌ Process rokne ke liye /cancel type karein."""
 
-ʏᴏᴜ ᴄᴀɴ ᴘᴜʀᴄʜᴀꜱᴇ ᴘʀᴇᴍɪᴜᴍ ᴛʜʀᴏᴜɢʜ ᴜᴘɪ , ɴᴇᴛ ʙᴀɴᴋɪɴɢ.
+    # --- 4. UTR Verification (ForceReply Text) ---
+    ASK_UTR_TEXT = """<b>📥 sᴛᴇᴘ 2: ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ</b>
 
-💳 ᴜᴘɪ ɪᴅ - <code>ɴᴏ ᴀᴠᴀɪʟᴀʙʟᴇ ʀɪɢʜᴛ ɴᴏᴡ</code>
+Apna 12-digit <b>Transaction ID / UTR ID</b> yahan reply karein jo aapke payment app (GPay/PhonePe/Paytm) mein dikh raha hai.
 
-💢 ᴍᴜꜱᴛ ꜱᴇɴᴅ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴀꜰᴛᴇʀ ᴘᴀʏᴍᴇɴᴛ.
+⚠️ <i>Galat ID bhejne par aapka account ban ho sakta hai.</i>"""
 
-‼️ ᴀꜰᴛᴇʀ ꜱᴇɴᴅɪɴɢ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ᴘʟᴇᴀꜱᴇ ɢɪᴠᴇ ᴜꜱ ꜱᴏᴍᴇᴛɪᴍᴇ ᴛᴏ ᴀᴅᴅ ʏᴏᴜ ɪɴ ᴘʀᴇᴍɪᴜᴍ ʟɪꜱᴛ.</b>"""
-    
-    
-    BPREMIUM_TXT = """<blockquote>🎁 <b>ᴘʀᴇᴍɪᴜᴍ ꜰᴇᴀᴛᴜʀᴇꜱ</b> :</blockquote>
+    # --- 5. Invalid UTR Alert ---
+    INVALID_UTR_TEXT = """<b>❌ ɪɴᴠᴀʟɪᴅ ᴛʀᴀɴsᴀᴄᴛɪᴏɴ ɪᴅ!</b>
 
-○ ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴠᴇʀɪꜰʏ
-○ ɴᴏ ɴᴇᴇᴅ ᴛᴏ ᴏᴘᴇɴ ʟɪɴᴋꜱ
-○ ᴅɪʀᴇᴄᴛ ꜰɪʟᴇꜱ   
-○ ᴀᴅ-ꜰʀᴇᴇ ᴇxᴘᴇʀɪᴇɴᴄᴇ 
-○ ʜɪɢʜ-ꜱᴘᴇᴇᴅ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ                         
-○ ᴍᴜʟᴛɪ-ᴘʟᴀʏᴇʀ ꜱᴛʀᴇᴀᴍɪɴɢ ʟɪɴᴋꜱ                           
-○ ᴜɴʟɪᴍɪᴛᴇᴅ ᴍᴏᴠɪᴇꜱ & ꜱᴇʀɪᴇꜱ                                                                        
-○ ꜰᴜʟʟ ᴀᴅᴍɪɴ ꜱᴜᴘᴘᴏʀᴛ                              
-○ ʀᴇǫᴜᴇꜱᴛ ᴡɪʟʟ ʙᴇ ᴄᴏᴍᴘʟᴇᴛᴇᴅ ɪɴ 1ʜ [ ɪꜰ ᴀᴠᴀɪʟᴀʙʟᴇ ]
+Aapne jo ID bheji hai wo sahi nahi hai. UPI Transaction ID hamesha <b>12-digit ka number</b> hota hai.
 
-• ʏᴏᴜ ᴄᴀɴ ɢᴇᴛ ᴘʀᴇᴍɪᴜᴍ ʙʏ ʀᴇꜰᴇʀɪɴɢ ʏᴏᴜʀ ꜰʀɪᴇɴᴅꜱ ᴏʀ ʏᴏᴜ ᴄᴀɴ ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ ꜱᴇʀᴠɪᴄᴇ 
+Kripya sahi ID dobara reply karein ya /cancel se bahar nikal jayein."""
 
-•─────•─────────•─────•
-◉ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴀᴄᴛɪᴠᴇ ᴘʟᴀɴ : /myplan
+    # --- 6. Final Submission Success ---
+    SUBMITTED_TEXT = """<b>✅ ɪᴅ ʀᴇᴄᴇɪᴠᴇᴅ!</b>
 
-‼️ ᴀꜰᴛᴇʀ ꜱᴇɴᴅɪɴɢ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ ɢɪᴠᴇ ᴜꜱ ꜱᴏᴍᴇᴛɪᴍᴇꜱ ᴛᴏ ᴀᴅᴅ ʏᴏᴜ ɪɴ ᴘʀᴇᴍɪᴜᴍ ʟɪꜱᴛ."""   
-    
+Aapka payment verification ke liye bhej diya gaya hai. Admin verify karke aapko 1-2 ghante mein notify kar denge. Intezar karein!"""
+
+    # --- 7. Cancel Process ---
+    CANCEL_TEXT = """<b>❌ ᴘʀᴏᴄᴇss ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>
+
+Aapne payment process rok diya hai. Agar aap dobara shuru karna chahte hain toh /plan type karein."""
+
+    # --- 8. Admin Log Text ---
+    ADMIN_LOG_TEXT = """<b>💰 ɴᴇᴡ ᴘᴀʏᴍᴇɴᴛ ᴀʟᴇʀᴛ</b>
+
+👤 <b>ᴜsᴇʀ:</b> {}
+🆔 <b>ɪᴅ:</b> <code>{}</code>
+🔢 <b>ᴜᴛʀ:</b> <code>{}</code>
+
+Verify karke niche diye gaye button se Approve ya Reject karein."""
+
       
     NORSLTS = """ 
 #NoResults
