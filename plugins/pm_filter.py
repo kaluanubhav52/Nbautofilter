@@ -697,7 +697,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             for price, time in PREMIUM_PLANS.items():
                 btn.append([InlineKeyboardButton(f"✨ {time} Plan - ₹{price}", callback_data=f"gen_qr_{price}")])
             
-            btn.append([InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ⇋', callback_data='premium_info')])
+            btn.append([InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ⇋', callback_data='premium')])
             
             reply_markup = InlineKeyboardMarkup(btn)
             await client.edit_message_media(
@@ -722,7 +722,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             out.seek(0)
             
             btn = [[
-				InlineKeyboardButton('✅ I have Paid✅', callback_data=f"sub_id_{amount}")
+				InlineKeyboardButton('✅ I have Paid ✅', callback_data=f"sub_id_{amount}")
 			],[
                 InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʟᴀɴꜱ ⇋', callback_data='buy_info')
             ]]
