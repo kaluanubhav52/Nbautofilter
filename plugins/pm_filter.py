@@ -699,53 +699,57 @@ async def cb_handler(client: Client, query: CallbackQuery):
             media=InputMediaPhoto(random.choice(PICS), caption=script.BPREMIUM_TXT),
             reply_markup=InlineKeyboardMarkup(btn)
         )
-
+		
     elif query.data == "buy_info":
-        # Automatic Plan Buttons Generation
-        # Ye config.py ke PREMIUM_PLANS se apne aap buttons bana dega
-        btn = [[InlineKeyboardButton(f"✨ {t} - ₹{p}", callback_data=f"gen_qr_{p}")] for p, t in PREMIUM_PLANS.items()]
-        btn.append([InlineKeyboardButton("⋞ ʙᴀᴄᴋ", callback_data="premium")])
-        
-        await query.message.edit_caption(
-            caption=script.PREMIUM_TEXT.format(query.from_user.mention),
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
+        try:
+            # Info.py se PREMIUM_PLANS lekar buttons banana
+            btn = []
+            for price, time in PREMIUM_PLANS.items():
+                btn.append([InlineKeyboardButton(f"✨ {time} Plan - ₹{price}", callback_data=f"gen_qr_{price}")])
+            
+            btn.append([InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʀᴇᴍɪᴜᴍ ⇋', callback_data='premium_info')])
+            
+            reply_markup = InlineKeyboardMarkup(btn)
+            await client.edit_message_media(
+                chat_id=query.message.chat.id,
+                message_id=query.message.id,
+                media=InputMediaPhoto(media=SUBSCRIPTION, caption=script.PREMIUM_TEXT, parse_mode=enums.ParseMode.HTML),
+                reply_markup=reply_markup
+            )
+        except Exception as e:
+            logging.exception("Exception in 'buy_info' callback")
 
     elif query.data.startswith("gen_qr_"):
-        # QR Code Generator with Amount
         try:
             amount = int(query.data.split("_")[2])
+            # UPI URL with Pre-filled Amount
             upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
             
-            # Memory mein QR banana
+            # Generating QR in RAM (No file saving)
             qr_img = segno.make(upi_url)
             out = io.BytesIO()
             qr_img.save(out, kind='png', scale=10)
             out.seek(0)
             
-            btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
-                   [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
+            btn = [[
+                InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ᴘʟᴀɴꜱ ⇋', callback_data='buy_info')
+            ]]
             
-            await query.message.edit_media(
-                media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
+            # Edit existing message to show QR
+            await client.edit_message_media(
+                chat_id=query.message.chat.id,
+                message_id=query.message.id,
+                media=InputMediaPhoto(
+                    media=out, 
+                    caption=f"<b>✅ Scan & Pay ₹{amount}</b>\n\n"
+                            f"<b>UPI ID:</b> <code>{UPI_ID}</code>\n\n"
+                            f"<i>Pay karne ke baad screenshot owner ko bhejien fast activation ke liye.</i>"
+                ),
                 reply_markup=InlineKeyboardMarkup(btn)
             )
         except Exception as e:
-            print(f"QR Error: {e}")
-
-    elif query.data.startswith("paid_"):
-        # "I Have Paid" dabane par UTR mangna
-        try:
-            amount = query.data.split("_")[1]
-            # [FIX] ForceReply yahan tabhi kaam karega jab upar import ho
-            await query.message.reply_text(
-                text=script.ASK_UTR_TEXT,
-                reply_markup=ForceReply(selective=True)
-            )
-            await query.answer("Please reply with your 12-digit UTR ID", show_alert=False)
-        except Exception as e:
-            print(f"Paid Button Error: {e}")
-
+            logging.exception("Exception in 'gen_qr' callback")
+			
     elif query.data == "earn":
         try:
             btn = [[ 
