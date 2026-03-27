@@ -30,43 +30,43 @@ SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://telegra.ph/file/f983d857f3c
 FSUB_IMG = (environ.get('FSUB_IMG', 'https://i.ibb.co/cShkPjcZ/x.jpg')).split() 
 
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '').split()] 
-CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-100').split()]
-LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-100'))  
-BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-100'))  
-MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-100'))  
-PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-100')) 
+CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '-1003853500447').split()]
+LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1003814751875'))  
+BIN_CHANNEL = int(environ.get('BIN_CHANNEL', '-1003579983148'))  
+MOVIE_UPDATE_CHANNEL = int(environ.get('MOVIE_UPDATE_CHANNEL', '-1003062629837'))  
+PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', '-1003598872719')) 
 auth_grp = environ.get('AUTH_GROUP')
 AUTH_GROUPS = [int(ch) for ch in auth_grp.split()] if auth_grp else None
-reqst_channel = environ.get('REQST_CHANNEL_ID', '-100') 
+reqst_channel = environ.get('REQST_CHANNEL_ID', '-1003525105249') 
 REQST_CHANNEL = int(reqst_channel) if reqst_channel and id_pattern.search(reqst_channel) else None
-support_chat_id = environ.get('SUPPORT_CHAT_ID', '-100') 
+support_chat_id = environ.get('SUPPORT_CHAT_ID', '-1003219334269') 
 SUPPORT_CHAT_ID = int(support_chat_id) if support_chat_id and id_pattern.search(support_chat_id) else None
 
 DATABASE_URI = environ.get('DATABASE_URI', "")
-DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXBotz_files')
+DATABASE_NAME = environ.get('DATABASE_NAME', "texxxx")
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'SilentXxxxx')
 
 # If MULTIPLE_DB Is True Then Fill DATABASE_URI2 Value Else You Will Get Error.
 MULTIPLE_DB = is_enabled(os.environ.get('MULTIPLE_DB', "True"), True) # Type True For Turn On MULTIPLE DB FUNTION 
 DATABASE_URI2 = environ.get('DATABASE_URI2', "")
 DB_CHANGE_LIMIT = int(environ.get('DB_CHANGE_LIMIT', "432")) 
 
-GRP_LNK = environ.get('GRP_LNK', 'https://t.me/SilentXBotz')
-CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/SilentXBotz')
-OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/SilentXBotz')
-UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/SilentXBotz')
+GRP_LNK = environ.get('GRP_LNK', 'https://t.me/infinityaudiosearchinggroup')
+CHNL_LNK = environ.get('CHNL_LNK', 'https://t.me/freestoryhubmr')
+OWNER_LNK = environ.get('OWNER_LNK', 'https://t.me/hdfilm0900_bot')
+UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/storyupdatechannel')
 
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-100") # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-100')
 
 IS_VERIFY = is_enabled('IS_VERIFY', False)
-LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-100'))
-LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-100'))
+LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003814751875'))
+LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003814751875'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
 
-TUTORIAL = environ.get("TUTORIAL", "https://t.me/SilentXBotz")
-TUTORIAL_2 = environ.get("TUTORIAL_2", "https://t.me/SilentXBotz")
-TUTORIAL_3 = environ.get("TUTORIAL_3", "https://t.me/SilentXBotz")
+TUTORIAL = environ.get("TUTORIAL", "https://t.me/howanubhav/14")
+TUTORIAL_2 = environ.get("TUTORIAL_2", "https://t.me/howanubhav/14")
+TUTORIAL_3 = environ.get("TUTORIAL_3", "https://t.me/howanubhav/14")
 
 SHORTENER_API = environ.get("SHORTENER_API", "")
 SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "")
@@ -81,9 +81,9 @@ TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
 THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
 
 # --- 2. UPI & Payment Settings ---
-UPI_ID = "yourname@bank"           # Apna UPI ID (e.g. 9876543210@paytm)
-RECEIVER_NAME = "My Bot Premium"   # Payment app mein jo naam dikhega
-ADMIN_USER = "YourUsername"        # Bina @ ke (User ko reject hone par dikhega)
+UPI_ID = "6398324472@fam"           # Apna UPI ID (e.g. 9876543210@paytm)
+RECEIVER_NAME = "FUN WAVE FM"   # Payment app mein jo naam dikhega
+ADMIN_USER = "HDFILM0900_BOT"        # Bina @ ke (User ko reject hone par dikhega)
 
 
 # --- 4. Automatic Premium Plans ---
@@ -123,7 +123,7 @@ PROTECT_CONTENT = is_enabled((environ.get('PROTECT_CONTENT', "False")), True)
 PM_SEARCH = bool(environ.get('PM_SEARCH', True)) 
 EMOJI_MODE = bool(environ.get('EMOJI_MODE', False)) 
 PAID_STREAM = bool(environ.get('PAID_STREAM', True)) 
-STREAM_MODE = bool(environ.get('STREAM_MODE', True))
+STREAM_MODE = bool(environ.get('STREAM_MODE', False))
 MAINTENANCE_MODE = bool(environ.get('MAINTENANCE_MODE', False)) 
 
 IGNORE_WORDS = (list(os.environ.get("IGNORE_WORDS").split(",")) if os.environ.get("IGNORE_WORDS") else []) #Remove Words While Searching Files
