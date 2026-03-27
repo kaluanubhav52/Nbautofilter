@@ -7,7 +7,14 @@ from info import *
 from utils import get_seconds, temp
 from database.users_chats_db import db 
 import asyncio
-from pyrogram import Client, filters 
+from pyrogram import Client, filters, enums
+from pyrogram.types import (
+    InlineKeyboardButton, 
+    InlineKeyboardMarkup, 
+    InputMediaPhoto, 
+    ForceReply, 
+    ReplyKeyboardRemove
+)
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import *
 from logging_helper import LOGGER
@@ -130,20 +137,7 @@ async def premium_user(client, message):
             outfile.write(new)
         await message.reply_document('usersplan.txt', caption="Paid Users:")
 
-import io, asyncio, datetime, pytz, segno, random
-from pyrogram import Client, filters, enums
-from pyrogram.types import (
-    InlineKeyboardButton, 
-    InlineKeyboardMarkup, 
-    InputMediaPhoto, 
-    ForceReply, 
-    ReplyKeyboardRemove
-)
-from config import (
-    UPI_ID, RECEIVER_NAME, PREMIUM_LOGS, 
-    PREMIUM_PLANS, ADMIN_USER, PICS
-)
-from script import script
+
 
 # --- 1. /plan Command (Main Menu) ---
 @Client.on_message(filters.command("plan") & filters.private)
