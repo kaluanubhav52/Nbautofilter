@@ -59,7 +59,7 @@ UPDATE_CHANNEL_LNK = environ.get('UPDATE_CHANNEL_LNK', 'https://t.me/storyupdate
 AUTH_CHANNEL = environ.get("AUTH_CHANNEL", "-100") # add multiple channels here, separated by single space
 AUTH_REQ_CHANNEL = environ.get('AUTH_REQ_CHANNEL', '-100')
 
-IS_VERIFY = is_enabled('IS_VERIFY', False)
+IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1003814751875'))
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1003814751875'))
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://telegra.ph/file/9ecc5d6e4df5b83424896.jpg")
@@ -68,17 +68,17 @@ TUTORIAL = environ.get("TUTORIAL", "https://t.me/howanubhav/14")
 TUTORIAL_2 = environ.get("TUTORIAL_2", "https://t.me/howanubhav/14")
 TUTORIAL_3 = environ.get("TUTORIAL_3", "https://t.me/howanubhav/14")
 
-SHORTENER_API = environ.get("SHORTENER_API", "")
-SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "")
+SHORTENER_API = environ.get("SHORTENER_API", "d9e2ed76f4f30e39ccefc3455e5a8811a33cbe2f")
+SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "arolinks.com")
 
-SHORTENER_API2 = environ.get("SHORTENER_API2", "")
-SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "")
+SHORTENER_API2 = environ.get("SHORTENER_API2", "d9e2ed76f4f30e39ccefc3455e5a8811a33cbe2f")
+SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "arolinks.com")
 
-SHORTENER_API3 = environ.get("SHORTENER_API3", "")
-SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "")
+SHORTENER_API3 = environ.get("SHORTENER_API3", "d9e2ed76f4f30e39ccefc3455e5a8811a33cbe2f")
+SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "arolinks.com")
 
-TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
-THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
+TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "3600"))
+THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "7200"))
 
 # --- 2. UPI & Payment Settings ---
 UPI_ID = "6398324472@fam"           # Apna UPI ID (e.g. 9876543210@paytm)
