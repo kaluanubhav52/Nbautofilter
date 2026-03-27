@@ -1,4 +1,5 @@
 import asyncio
+import io, segno, random
 import re
 import ast
 import math
@@ -689,94 +690,55 @@ async def cb_handler(client: Client, query: CallbackQuery):
             LOGGER.error(e)
 
     elif query.data == "premium":
-        try:
-            btn = [[
-                InlineKeyboardButton('🧧 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ 🧧', callback_data='buy'),
-            ],[
-                InlineKeyboardButton('👥 ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff'),
-                InlineKeyboardButton('🈚 ꜰʀᴇᴇ ᴛʀɪᴀʟ', callback_data='give_trial')
-            ],[            
-                InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')
-            ]]
-            reply_markup = InlineKeyboardMarkup(btn)                        
-            await client.edit_message_media(                
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(random.choice(PICS))                       
-            )
-            await query.message.edit_text(
-                text=script.BPREMIUM_TXT,
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
-        except Exception as e:
-            LOGGER.error(e)
-
-    elif query.data == "buy":
-        try:
-            btn = [[ 
-                InlineKeyboardButton('ꜱᴛᴀʀ', callback_data='star'),
-                InlineKeyboardButton('ᴜᴘɪ', callback_data='upi')
-            ],[
-                InlineKeyboardButton('⋞ ʙᴀᴄᴋ', callback_data='premium')
-            ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-            await client.edit_message_media(
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(SUBSCRIPTION)
-	        ) 
-            await query.message.edit_text(
-                text=script.PREMIUM_TEXT.format(query.from_user.mention),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            ) 
-        except Exception as e:
-            LOGGER.error(e)
-
-    elif query.data == "upi":
-        try:
-            btn = [[ 
-                InlineKeyboardButton('📱 ꜱᴇɴᴅ  ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', url=OWNER_LNK),
-            ],[
-                InlineKeyboardButton('⋞ ʙᴀᴄᴋ', callback_data='buy')
-            ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-            await client.edit_message_media(
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(SUBSCRIPTION)
-	        ) 
-            await query.message.edit_text(
-                text=script.PREMIUM_UPI_TEXT.format(query.from_user.mention),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            ) 
-        except Exception as e:
-            LOGGER.error(e)
-
-    elif query.data == "star":
-        try:
-            btn = [
-                InlineKeyboardButton(f"{stars}⭐", callback_data=f"buy_{stars}")
-                for stars, days in STAR_PREMIUM_PLANS.items()
-            ]
-            buttons = [btn[i:i + 2] for i in range(0, len(btn), 2)]
-            buttons.append([InlineKeyboardButton("⋞ ʙᴀᴄᴋ", callback_data="buy")])
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await client.edit_message_media(
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(random.choice(PICS))
-			)
-            await query.message.edit_text(
-                text=script.PREMIUM_STAR_TEXT,
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
+        # Main Premium Welcome Screen
+        btn = [[InlineKeyboardButton('🧧 ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ 🧧', callback_data='buy_info')],
+               [InlineKeyboardButton('👥 ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff')],
+               [InlineKeyboardButton('⇋ ʙᴀᴄᴋ ᴛᴏ ʜᴏᴍᴇ ⇋', callback_data='start')]]
+        
+        await query.message.edit_media(
+            media=InputMediaPhoto(random.choice(PICS), caption=script.BPREMIUM_TXT),
+            reply_markup=InlineKeyboardMarkup(btn)
         )
-        except Exception as e:
-            LOGGER.error(e)
 
+    elif query.data == "buy_info":
+        # Automatic Plan Buttons Generation
+        # Ye config.py ke PREMIUM_PLANS se apne aap buttons bana dega
+        btn = [[InlineKeyboardButton(f"✨ {t} - ₹{p}", callback_data=f"gen_qr_{p}")] for p, t in PREMIUM_PLANS.items()]
+        btn.append([InlineKeyboardButton("⋞ ʙᴀᴄᴋ", callback_data="premium")])
+        
+        await query.message.edit_caption(
+            caption=script.PREMIUM_TEXT.format(query.from_user.mention),
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+
+    elif query.data.startswith("gen_qr_"):
+        # QR Code Generator with Amount
+        amount = int(query.data.split("_")[2])
+        upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
+        
+        # Memory mein QR banana (segno use karke)
+        qr_img = segno.make(upi_url)
+        out = io.BytesIO()
+        qr_img.save(out, kind='png', scale=10)
+        out.seek(0)
+        
+        btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
+               [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
+        
+        await query.message.edit_media(
+            media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+
+    elif query.data.startswith("paid_"):
+        # "I Have Paid" dabane par UTR mangna
+        amount = query.data.split("_")[1]
+        await query.message.reply_text(
+            text=script.ASK_UTR_TEXT,
+            reply_markup=ForceReply(selective=True)
+        )
+        await query.answer("Please reply with your 12-digit UTR ID", show_alert=False)
+		
     elif query.data == "earn":
         try:
             btn = [[ 
