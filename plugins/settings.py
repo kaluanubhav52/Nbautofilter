@@ -64,78 +64,85 @@ async def get_main_settings_text(grp_id, title):
 
 @Client.on_callback_query(filters.regex(r'^opnsetgrp'))
 async def open_settings_group(client, query):
-    ident, grp_id = query.data.split("#")
-    userid = query.from_user.id if query.from_user else None
-    st = await client.get_chat_member(grp_id, userid)
-    if (
-            st.status != enums.ChatMemberStatus.ADMINISTRATOR
-            and st.status != enums.ChatMemberStatus.OWNER
-            and str(userid) not in ADMINS
-    ):
-        await query.answer("ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ !", show_alert=True)
-        return
-    title = query.message.chat.title
-    btn = await group_setting_buttons(int(grp_id))
-    text = await get_main_settings_text(int(grp_id), title)
+    # ID ko hamesha integer mein convert karein
+    _, grp_id = query.data.split("#")
+    grp_id = int(grp_id) 
+    userid = query.from_user.id
+
+    # Admin Check: Yahan grp_id ko integer bhejna zaroori hai
+    try:
+        st = await client.get_chat_member(grp_id, userid)
+        if (
+                st.status != enums.ChatMemberStatus.ADMINISTRATOR
+                and st.status != enums.ChatMemberStatus.OWNER
+                and userid not in ADMINS
+        ):
+            await query.answer("ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ !", show_alert=True)
+            return
+    except Exception as e:
+        return await query.answer(f"Error: {e}", show_alert=True)
+
+    # Title hamesha group ID se fetch karein, query.message se nahi
+    chat = await client.get_chat(grp_id)
+    title = chat.title
+    
+    btn = await group_setting_buttons(grp_id)
+    text = await get_main_settings_text(grp_id, title)
+    
     try:
         await query.message.edit_text(
-                text=text,
-                disable_web_page_preview=True,
-                parse_mode=enums.ParseMode.HTML,
-                reply_markup=InlineKeyboardMarkup(btn)
-        )
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-        await query.message.edit_text(
-                text=text,
-                disable_web_page_preview=True,
-                parse_mode=enums.ParseMode.HTML,
-                reply_markup=InlineKeyboardMarkup(btn)
+            text=text,
+            reply_markup=InlineKeyboardMarkup(btn),
+            disable_web_page_preview=True,
+            parse_mode=enums.ParseMode.HTML
         )
     except MessageNotModified:
         pass
+    except Exception as e:
+        LOGGER.error(e)
 
 @Client.on_callback_query(filters.regex(r'^opnsetpm'))
 async def open_settings_pm(client, query):
-    ident, grp_id = query.data.split("#")
-    userid = query.from_user.id if query.from_user else None
+    _, grp_id = query.data.split("#")
+    grp_id = int(grp_id)
+    userid = query.from_user.id
+
+    # Admin Check
     st = await client.get_chat_member(grp_id, userid)
     if (
             st.status != enums.ChatMemberStatus.ADMINISTRATOR
             and st.status != enums.ChatMemberStatus.OWNER
-            and str(userid) not in ADMINS
+            and userid not in ADMINS
     ):
-        await query.answer("ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴀɴᴛ ʀɪɢʜᴛꜱ ᴛᴏ ᴅᴏ ᴛʜɪꜱ !", show_alert=True)
+        await query.answer("ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ꜱᴜꜰꜰɪᴄɪᴀɴᴛ ʀɪɢʜᴛꜱ !", show_alert=True)
         return
-    title = query.message.chat.title
-    btn2 = [[
-             InlineKeyboardButton("ᴄʜᴇᴄᴋ ᴍʏ ᴅᴍ 🗳️", url=f"telegram.me/{temp.U_NAME}")
-           ]]
-    reply_markup = InlineKeyboardMarkup(btn2)
-    try:
-        await query.message.edit_text(
-            f"<b>ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴇɴᴜ ꜰᴏʀ {title} ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴛ ᴛᴏ ʏᴏᴜ ʙʏ ᴅᴍ.</b>",
-            reply_markup=reply_markup
-        )
-    except FloodWait as e:
-        await asyncio.sleep(e.value)
-        await query.message.edit_text(
-            f"<b>ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴇɴᴜ ꜰᴏʀ {title} ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴛ ᴛᴏ ʏᴏᴜ ʙʏ ᴅᴍ.</b>",
-            reply_markup=reply_markup
-        )
-    except MessageNotModified:
-        pass
 
-    btn = await group_setting_buttons(int(grp_id))
-    text = await get_main_settings_text(int(grp_id), title)
-    await client.send_message(
-        chat_id=userid,
-        text=text,
-        reply_markup=InlineKeyboardMarkup(btn),
-        disable_web_page_preview=True,
-        parse_mode=enums.ParseMode.HTML,
-        reply_to_message_id=query.message.id
+    chat = await client.get_chat(grp_id)
+    title = chat.title
+    
+    # 1. Group mein message edit karein (Confirm karne ke liye)
+    btn2 = [[InlineKeyboardButton("ᴄʜᴇᴄᴋ ᴍʏ ᴅᴍ 🗳️", url=f"https://t.me/{temp.U_NAME}")] ]
+    await query.message.edit_text(
+        f"<b>ʏᴏᴜʀ ꜱᴇᴛᴛɪɴɢꜱ ᴍᴇɴᴜ ꜰᴏʀ {title} ʜᴀꜱ ʙᴇᴇɴ ꜱᴇɴᴛ ᴛᴏ ʏᴏᴜ ʙʏ ᴅᴍ.</b>",
+        reply_markup=InlineKeyboardMarkup(btn2)
     )
+
+    # 2. PM mein settings bhein (Important: reply_to_message_id HATA DIYA HAI)
+    btn = await group_setting_buttons(grp_id)
+    text = await get_main_settings_text(grp_id, title)
+    
+    try:
+        await client.send_message(
+            chat_id=userid,
+            text=text,
+            reply_markup=InlineKeyboardMarkup(btn),
+            disable_web_page_preview=True,
+            parse_mode=enums.ParseMode.HTML
+        )
+        await query.answer("Check DM! ✅")
+    except Exception:
+        await query.answer("Please start the bot in DM first! ❌", show_alert=True)
+
 
 @Client.on_callback_query(filters.regex(r'^grp_pm'))
 async def group_pm_settings(client, query):
