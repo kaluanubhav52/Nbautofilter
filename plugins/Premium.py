@@ -130,103 +130,181 @@ async def premium_user(client, message):
             outfile.write(new)
         await message.reply_document('usersplan.txt', caption="Paid Users:")
 
-@Client.on_message(filters.command("plan"))
-async def plan(client, message):
+import io, asyncio, datetime, pytz, segno, random
+from pyrogram import Client, filters, enums
+from pyrogram.types import (
+    InlineKeyboardButton, 
+    InlineKeyboardMarkup, 
+    InputMediaPhoto, 
+    ForceReply, 
+    ReplyKeyboardRemove
+)
+from config import (
+    UPI_ID, RECEIVER_NAME, PREMIUM_LOGS, 
+    PREMIUM_PLANS, ADMIN_USER, PICS
+)
+from script import script
+
+# --- 1. /plan Command (Main Menu) ---
+@Client.on_message(filters.command("plan") & filters.private)
+async def plan_handler(client, message):
     user_id = message.from_user.id 
-    users = message.from_user.mention
-    log_message = f"<b><u>🚫 ᴛʜɪs ᴜsᴇʀs ᴛʀʏ ᴛᴏ ᴄʜᴇᴄᴋ /plan</u> {temp.B_LINK}\n\n- ɪᴅ - `{user_id}`\n- ɴᴀᴍᴇ - {users}</b>" 
-    btn = [[
-            InlineKeyboardButton('• ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ •', callback_data='buy'),           
-    ],[                
-	    InlineKeyboardButton('• ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff'),                
-	    InlineKeyboardButton('ꜰʀᴇᴇ ᴛʀɪᴀʟ •', callback_data='free')        
-    ],[            
-            InlineKeyboardButton('🚫 ᴄʟᴏꜱᴇ 🚫', callback_data='close_data')
-    ]]
-    msg = await message.reply_photo(photo="https://graph.org/file/86da2027469565b5873d6.jpg", caption=script.BPREMIUM_TXT, reply_markup=InlineKeyboardMarkup(btn))
-    await client.send_message(PREMIUM_LOGS, log_message)
-    await asyncio.sleep(300)
-    await msg.delete()
-    await message.delete()
-
-
-# Telegram Star Payment Method 
-# Credit - https://github.com/NBBotz 
-# Credit - https://telegram.me/SilentXBotz
-
-@Client.on_callback_query(filters.regex(r"buy_\d+"))
-async def premium_button(client, callback_query: CallbackQuery):
-    try:
-        amount = int(callback_query.data.split("_")[1])
-        if amount in STAR_PREMIUM_PLANS:
-            try:
-                buttons = [[	
-                    InlineKeyboardButton("ᴄᴀɴᴄᴇʟ 🚫", callback_data="cancel_star_premium"),		    				
-                ]]
-                reply_markup = InlineKeyboardMarkup(buttons)
-                await client.send_invoice(
-                    chat_id=callback_query.message.chat.id,
-                    title="Premium Subscription",
-                    description=f"Pay {amount} Star And Get Premium For {STAR_PREMIUM_PLANS[amount]}",
-                    payload=f"silentxpremium_{amount}",
-                    currency="XTR",
-                    prices=[
-                        LabeledPrice(
-                            label="Premium Subscription", 
-                            amount=amount
-                        ) 
-                    ],
-                    reply_markup=reply_markup
-                )
-                await callback_query.answer()
-            except Exception as e:
-                LOGGER.error(f"Error sending invoice: {e}")
-                await callback_query.answer("🚫 Error Processing Your Payment. Try again.", show_alert=True)
-        else:
-            await callback_query.answer("⚠️ Invalid Premium Package.", show_alert=True)
-    except Exception as e:
-        LOGGER.error(f"Error In buy_ - {e}")
- 
-@Client.on_pre_checkout_query()
-async def pre_checkout_handler(client, query: PreCheckoutQuery):
-    try:
-        if query.payload.startswith("silentxpremium_"):
-            await query.answer(success=True)
-        else:
-            await query.answer(success=False, error_message="⚠️ Invalid Purchase Type.", show_alert=True)
-    except Exception as e:
-        LOGGER.error(f"Pre-checkout error: {e}")
-        await query.answer(success=False, error_message="🚫 Unexpected Error Occurred." , show_alert=True)
-
-@Client.on_message(filters.successful_payment)
-async def successful_premium_payment(client, message):
-    try:
-        amount = int(message.successful_payment.total_amount)
-        user_id = message.from_user.id
-        time_zone = datetime.datetime.now(pytz.timezone("Asia/Kolkata"))
-        current_time = time_zone.strftime("%d-%m-%Y | %I:%M:%S %p") 
-        if amount in STAR_PREMIUM_PLANS:
-            time = STAR_PREMIUM_PLANS[amount]
-            seconds = await get_seconds(time)
-            if seconds > 0:
-                expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
-                user_data = {"id": user_id, "expiry_time": expiry_time}
-                await db.update_user(user_data)
-                data = await db.get_user(user_id)
-                expiry = data.get("expiry_time")
-                expiry_str_in_ist = expiry.astimezone(pytz.timezone("Asia/Kolkata")).strftime("%d-%m-%Y | %I:%M:%S %p")    
-                await message.reply(text=f"Thankyou For Purchasing Premium Service Using Star ✅\n\nSubscribtion Time - {time}\nExpire In - {expiry_str_in_ist}", disable_web_page_preview=True)                
-                await client.send_message(PREMIUM_LOGS, text=f"#Purchase_Premium_With_Start\n\n👤 ᴜꜱᴇʀ - {message.from_user.mention}\n\n⚡ ᴜꜱᴇʀ ɪᴅ - <code>{user_id}</code>\n\n🚫 ꜱᴛᴀʀ ᴘᴀʏ - {amount}⭐\n\n⏰ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇꜱꜱ - {time}\n\n⌛️ ᴊᴏɪɴɪɴɢ ᴅᴀᴛᴇ - {current_time}\n\n⌛️ ᴇxᴘɪʀʏ ᴅᴀᴛᴇ - {expiry_str_in_ist}", disable_web_page_preview=True)
-            else:
-                await message.reply("⚠️ Invalid Premium Time.")
-        else:
-            await message.reply("⚠️ Invalid Premium Package.")
-    except Exception as e:
-        LOGGER.error(f"Error Processing Premium Payment: {e}")
-        await message.reply("✅ Thank You For Your Payment! (Error Logging Details)")
-
-@Client.on_callback_query(filters.regex("cancel_star_premium"))
-async def cancel_premium(client, callback_query: CallbackQuery):
-    await callback_query.message.delete()
-
     
+    # Admin Alert (Optional)
+    await client.send_message(PREMIUM_LOGS, f"👤 {message.from_user.mention} (`{user_id}`) is checking /plan")
+
+    btn = [[
+        InlineKeyboardButton('• ʙᴜʏ ᴘʀᴇᴍɪᴜᴍ •', callback_data='buy_info'),           
+    ],[                
+        InlineKeyboardButton('• ʀᴇꜰᴇʀ ꜰʀɪᴇɴᴅꜱ', callback_data='reffff'),                
+        InlineKeyboardButton('ꜰʀᴇᴇ ᴛʀɪᴀʟ •', callback_data='give_trial')        
+    ],[            
+        InlineKeyboardButton('🚫 ᴄʟᴏꜱᴇ 🚫', callback_data='close_data')
+    ]]
+    
+    await message.reply_photo(
+        photo=random.choice(PICS), 
+        caption=script.BPREMIUM_TXT, 
+        reply_markup=InlineKeyboardMarkup(btn)
+    )
+
+# --- 2. Buy Info (Automatic Buttons from Config) ---
+@Client.on_callback_query(filters.regex("buy_info"))
+async def buy_info_handler(client, query):
+    # Buttons config.py ke PREMIUM_PLANS se apne aap banenge
+    btn = [[InlineKeyboardButton(f"✨ {t} - ₹{p}", callback_data=f"gen_qr_{p}")] 
+           for p, t in PREMIUM_PLANS.items()]
+    btn.append([InlineKeyboardButton("⋞ ʙᴀᴄᴋ", callback_data="premium")])
+    
+    await query.message.edit_caption(
+        caption=script.PREMIUM_TEXT.format(query.from_user.mention),
+        reply_markup=InlineKeyboardMarkup(btn)
+    )
+
+# --- 3. QR Generation Logic ---
+@Client.on_callback_query(filters.regex(r"gen_qr_(\d+)"))
+async def gen_qr_handler(client, query):
+    amount = int(query.matches[0].group(1))
+    upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
+    
+    qr_img = segno.make(upi_url)
+    out = io.BytesIO()
+    qr_img.save(out, kind='png', scale=10)
+    out.seek(0)
+    
+    btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
+           [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
+    
+    await query.message.edit_media(
+        media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
+        reply_markup=InlineKeyboardMarkup(btn)
+    )
+
+# --- 4. I Have Paid (UTR Request) ---
+@Client.on_callback_query(filters.regex(r"paid_(\d+)"))
+async def paid_handler(client, query):
+    await query.message.reply_text(
+        text=script.ASK_UTR_TEXT,
+        reply_markup=ForceReply(selective=True)
+    )
+    await query.answer()
+
+# --- 5. [CRITICAL] /cancel Command ---
+@Client.on_message(filters.command("cancel") & filters.private)
+async def cancel_handler(client, message):
+    # Ye user ko current state se bahar nikal dega
+    await message.reply_text(
+        text=script.CANCEL_TEXT,
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+# --- 6. UTR Submission & 12-Digit Check ---
+@Client.on_message(filters.private & filters.text & filters.reply, group=1)
+async def handle_utr_submission(client, message):
+    # Check if reply is to UTR request
+    if message.reply_to_message and "Step 2: Verification" in message.reply_to_message.text:
+        utr_id = message.text.strip()
+        
+        # Validation
+        if not (utr_id.isdigit() and len(utr_id) == 12):
+            await message.reply_text(
+                text=script.INVALID_UTR_TEXT,
+                reply_markup=ForceReply(selective=True)
+            )
+            return
+
+        # Admin Logs with Approve/Reject
+        user_id = message.from_user.id
+        await client.send_message(
+            chat_id=PREMIUM_LOGS,
+            text=f"<b>💰 New Payment Alert</b>\n\n👤 User: {message.from_user.mention}\n🆔 ID: <code>{user_id}</code>\n🔢 UTR: <code>{utr_id}</code>",
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("✅ Approve", callback_data=f"add_p_{user_id}"),
+                InlineKeyboardButton("❌ Reject", callback_data=f"rej_p_{user_id}")
+            ]])
+        )
+        await message.reply_text(script.SUBMITTED_TEXT, reply_markup=ReplyKeyboardRemove())
+        message.stop_propagation()
+
+# --- 7. Admin Actions: Approve & Reject Handler ---
+
+@Client.on_callback_query(filters.regex(r"^(add_p|rej_p)_(\d+)"))
+async def admin_approval_callback(client, query):
+    # Callback data se action aur user_id nikalna
+    action = query.data.split("_")[0] # 'add' ya 'rej'
+    user_id = int(query.data.split("_")[2]) # User ID
+    admin_name = query.from_user.mention
+
+    if action == "add":
+        # 30 Days ki expiry set karna (Aap ise plans ke hisaab se change bhi kar sakte hain)
+        days = 30 
+        expiry_date = datetime.datetime.now() + datetime.timedelta(days=days)
+        
+        # Database Update (Aapka existing function)
+        try:
+            await db.update_user({"id": user_id, "expiry_time": expiry_date})
+            
+            # User ko message bhejna
+            await client.send_message(
+                chat_id=user_id,
+                text=f"<b>🎉 ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴛɪᴠᴀᴛᴇᴅ!</b>\n\n"
+                     f"✅ Aapka payment verify ho gaya hai.\n"
+                     f"⏳ ᴅᴜʀᴀᴛɪᴏɴ: {days} Days\n"
+                     f"📅 ᴇxᴘɪʀʏ: {expiry_date.strftime('%d-%m-%Y')}\n\n"
+                     f"Enjoy high-speed access!"
+            )
+            
+            # Admin Log Update
+            await query.message.edit_text(
+                f"<b>✅ Approved By:</b> {admin_name}\n"
+                f"👤 <b>User ID:</b> <code>{user_id}</code>\n"
+                f"📅 <b>Expiry:</b> {expiry_date.strftime('%d-%m-%Y')}"
+            )
+            await query.answer("User Approved Successfully!", show_alert=True)
+            
+        except Exception as e:
+            await query.answer(f"Error: {e}", show_alert=True)
+
+    elif action == "rej":
+        try:
+            # User ko Notify karna ki reject ho gaya
+            await client.send_message(
+                chat_id=user_id,
+                text=f"<b>❌ ᴘᴀʏᴍᴇɴᴛ ʀᴇᴊᴇᴄᴛᴇᴅ!</b>\n\n"
+                     f"Aapka UTR/Payment verify nahi ho paya.\n"
+                     f"Agar aapne sahi payment kiya hai toh @{ADMIN_USER} se contact karein."
+            )
+            
+            # Admin Log Update
+            await query.message.edit_text(
+                f"<b>❌ Rejected By:</b> {admin_name}\n"
+                f"👤 <b>User ID:</b> <code>{user_id}</code>\n"
+                f"⚠️ Status: Rejected"
+            )
+            await query.answer("User Rejected!", show_alert=True)
+            
+        except Exception as e:
+            await query.answer(f"Error: {e}", show_alert=True)
+				
+
+
