@@ -41,7 +41,6 @@ lock = asyncio.Lock()
 @Client.on_message(filters.group & filters.text & filters.incoming)
 async def give_filter(client, message):
     bot_id = client.me.id
-    if EMOJI_MODE:
     maintenance_mode = await db.get_maintenance_status(bot_id)
     if maintenance_mode and message.from_user.id not in ADMINS:
         await message.reply_text("ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜")
