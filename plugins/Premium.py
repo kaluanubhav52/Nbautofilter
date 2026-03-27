@@ -156,132 +156,97 @@ async def plan_handler(client, message):
         reply_markup=InlineKeyboardMarkup(btn)
     )
 
-# --- 2. Buy Info (Automatic Buttons from Config) ---
-@Client.on_callback_query(filters.regex("buy_info"))
-async def buy_info_handler(client, query):
-    # Buttons config.py ke PREMIUM_PLANS se apne aap banenge
-    btn = [[InlineKeyboardButton(f"✨ {t} - ₹{p}", callback_data=f"gen_qr_{p}")] 
-           for p, t in PREMIUM_PLANS.items()]
-    btn.append([InlineKeyboardButton("⋞ ʙᴀᴄᴋ", callback_data="premium")])
-    
-    await query.message.edit_caption(
-        caption=script.PREMIUM_TEXT.format(query.from_user.mention),
-        reply_markup=InlineKeyboardMarkup(btn)
-    )
+# --- [ SECTION 2: PAYMENT & QR LOGIC ] ---
 
-# --- 3. QR Generation Logic ---
-@Client.on_callback_query(filters.regex(r"gen_qr_(\d+)"))
-async def gen_qr_handler(client, query):
-    amount = int(query.matches[0].group(1))
+@Client.on_callback_query(filters.regex(r"buy_info"))
+async def buy_info_handler(client, query):
+    btn = [[InlineKeyboardButton(f"✨ {t} - ₹{p}", callback_data=f"gen_qr_{p}")] for p, t in PREMIUM_PLANS.items()]
+    btn.append([InlineKeyboardButton('⇋ Back ⇋', callback_data='premium')])
+    await query.message.edit_caption(caption=script.PREMIUM_TEXT, reply_markup=InlineKeyboardMarkup(btn))
+
+@Client.on_callback_query(filters.regex(r"gen_qr_\d+"))
+async def gen_qr_callback(client, query):
+    amount = int(query.data.split("_")[2])
     upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
     
-    qr_img = segno.make(upi_url)
-    out = io.BytesIO()
-    qr_img.save(out, kind='png', scale=10)
-    out.seek(0)
-    
-    btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
+    qr_img = segno.make(upi_url); out = io.BytesIO(); qr_img.save(out, kind='png', scale=10); out.seek(0)
+    btn = [[InlineKeyboardButton('✅ I have Paid✅', callback_data=f"sub_id_{amount}")],
            [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
     
-    await query.message.edit_media(
-        media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
-        reply_markup=InlineKeyboardMarkup(btn)
-    )
+    await query.message.edit_media(media=InputMediaPhoto(media=out, caption=f"<b>✅ Scan & Pay ₹{amount}</b>\n\nUPI: <code>{UPI_ID}</code>"), reply_markup=InlineKeyboardMarkup(btn))
 
-# --- 4. I Have Paid (UTR Request) ---
-@Client.on_callback_query(filters.regex(r"paid_(\d+)"))
-async def paid_handler(client, query):
-    await query.message.reply_text(
-        text=script.ASK_UTR_TEXT,
-        reply_markup=ForceReply(selective=True)
-    )
-    await query.answer()
+@Client.on_callback_query(filters.regex(r"sub_id_\d+"))
+async def ask_id(client, query):
+    amount = query.data.split("_")[2]
+    await query.message.reply_text(f"<b>📩 Submit Transaction ID (₹{amount})</b>\n\n12-digit UPI ID yahan reply karein.", reply_markup=ForceReply(selective=True))
 
-# --- 5. [CRITICAL] /cancel Command ---
-# Iska group humne -1 rakha hai taaki ye search se pehle trigger ho
-@Client.on_message(filters.command("cancel") & filters.private, group=-1)
-async def cancel_handler(client, message):
-    await message.reply_text(
-        text=script.CANCEL_TEXT,
-        reply_markup=ReplyKeyboardRemove()
-    )
-    # Ye line zaroori hai taaki niche wale filters trigger na hon
-    message.stop_propagation()
-
-# --- 6. UTR Submission & 12-Digit Check ---
-# Group ko -2 rakha hai (High Priority)
-@Client.on_message(filters.private & filters.text & filters.reply, group=-2)
-async def handle_utr_submission(client, message):
-    # Check if reply is to UTR request
-    if message.reply_to_message and "Step 2: Verification" in message.reply_to_message.text:
-        utr_id = message.text.strip()
-        
-        # Validation
-        if not (utr_id.isdigit() and len(utr_id) == 12):
-            await message.reply_text(
-                text=script.INVALID_UTR_TEXT,
-                reply_markup=ForceReply(selective=True)
-            )
-            # Stop propagation yahan bhi zaroori hai taaki galat ID par bhi search na ho
-            message.stop_propagation()
-            return
-
-        # Admin Logs
+@Client.on_message(filters.private & filters.text & filters.reply, group=1)
+async def handle_id_submission(client, message):
+    # Check karein ki kya ye wahi message hai jisme UTR maanga gaya tha
+    if message.reply_to_message and "Submit Transaction ID" in message.reply_to_message.text:
+        txn_id = message.text.strip()
         user_id = message.from_user.id
-        await client.send_message(
-            chat_id=PREMIUM_LOGS,
-            text=f"<b>💰 New Payment Alert</b>\n\n👤 User: {message.from_user.mention}\n🆔 ID: <code>{user_id}</code>\n🔢 UTR: <code>{utr_id}</code>",
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("✅ Approve", callback_data=f"add_p_{user_id}"),
-                InlineKeyboardButton("❌ Reject", callback_data=f"rej_p_{user_id}")
-            ]])
-        )
-        await message.reply_text(script.SUBMITTED_TEXT, reply_markup=ReplyKeyboardRemove())
         
-        # [VERY IMPORTANT] Iske baad bot kuch aur nahi karega (Search Stop)
+        # Admin Logs mein notification (Buttons ke saath)
+        await client.send_message(
+            chat_id=PREMIUM_LOGS, 
+            text=f"<b>💰 New Payment Alert</b>\n\n"
+                 f"👤 <b>User:</b> {message.from_user.mention}\n"
+                 f"🆔 <b>ID:</b> <code>{user_id}</code>\n"
+                 f"🔢 <b>TXN ID:</b> <code>{txn_id}</code>",
+            reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton("✅ Approve", callback_data=f"add_p_{user_id}"),
+                    InlineKeyboardButton("❌ Reject", callback_data=f"rej_p_{user_id}")
+                ]
+            ])
+        )
+        
+        await message.reply_text("✅ <b>Transaction ID received!</b>\nAdmin verify karke aapko notify karenge. Tab tak intezar karein.")
+        
+        # 🔥 Sabse Important: Isse bot aage search nahi karega
         message.stop_propagation()
 
-# --- 7. Admin Actions: Approve & Reject Handler ---
+# --- [ ADMIN ACTIONS: APPROVE & REJECT ] ---
 
-@Client.on_callback_query(filters.regex(r"^(add_p|rej_p)_(\d+)"))
-async def admin_approval_callback(client, query):
-    # Action: add_p ya rej_p | User_ID: (\d+)
-    action = query.data.split("_")[0] 
-    user_id = int(query.data.split("_")[2]) 
-    admin_name = query.from_user.mention
+@Client.on_callback_query(filters.regex(r"add_p_\d+"))
+async def approve_payment_handler(client, query):
+    user_id = int(query.data.split("_")[2])
+    
+    # 1 Month (30 Days) calculation
+    seconds = await get_seconds("30 days")
+    expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=seconds)
+    
+    # Database Update
+    await db.update_user({"id": user_id, "expiry_time": expiry_time})
+    
+    # User ko Message bhejna
+    try:
+        await client.send_message(
+            chat_id=user_id,
+            text="<b>🎉 Congratulations!</b>\n\nAapka Payment verify ho gaya hai. Aapka <b>Premium Plan (1 Month)</b> activate kar diya gaya hai. Enjoy! ✨"
+        )
+    except Exception as e:
+        print(f"User Notify Error: {e}")
 
-    if action == "add":
-        # Aapne kaha tha expiry pehle se set hai, 
-        # Toh bas user ko active karne ka message aur database update:
-        expiry_days = 30 # Default 30, ya plans ke hisaab se change karein
-        expiry_date = datetime.datetime.now() + datetime.timedelta(days=expiry_days)
-        
-        try:
-            # Database update (Aapka existing method use karein)
-            await db.update_user({"id": user_id, "expiry_time": expiry_date})
-            
-            # User ko notify karein
-            await client.send_message(
-                chat_id=user_id,
-                text=f"<b>🎉 ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴛɪᴠᴀᴛᴇᴅ!</b>\n\nAapka payment verify ho gaya hai.\n⏳ ᴠᴀʟɪᴅɪᴛʏ: {expiry_days} Days\n📅 ᴇxᴘɪʀʏ: {expiry_date.strftime('%d-%m-%Y')}"
-            )
-            
-            # Admin log update karein
-            await query.message.edit_text(
-                f"✅ <b>Approved By:</b> {admin_name}\n👤 <b>User:</b> <code>{user_id}</code>\n📅 <b>Expiry:</b> {expiry_date.strftime('%d-%m-%Y')}"
-            )
-            await query.answer("User Approved!", show_alert=True)
-            
-        except Exception as e:
-            await query.answer(f"Database Error: {e}", show_alert=True)
+    # Admin Log Update
+    await query.message.edit_text(f"✅ <b>Approved!</b>\nUser ID: <code>{user_id}</code>\nStatus: Premium Activated (30 Days)")
+    await query.answer("User Approved Successfully!", show_alert=True)
 
-    elif action == "rej":
-        try:
-            await client.send_message(
-                chat_id=user_id,
-                text=f"<b>❌ ᴘᴀʏᴍᴇɴᴛ ʀᴇᴊᴇᴄᴛᴇᴅ!</b>\n\nAapka UTR verify nahi ho paya. Sahi details ke saath dobara try karein ya @{ADMIN_USER} se contact karein."
-            )
-            await query.message.edit_text(f"❌ <b>Rejected By:</b> {admin_name}\n👤 <b>User:</b> <code>{user_id}</code>")
-            await query.answer("User Rejected!", show_alert=True)
-        except Exception as e:
-            await query.answer(f"Error: {e}", show_alert=True)
+
+@Client.on_callback_query(filters.regex(r"rej_p_\d+"))
+async def reject_payment_handler(client, query):
+    user_id = int(query.data.split("_")[2])
+    
+    # User ko Reject ka Message bhejna
+    try:
+        await client.send_message(
+            chat_id=user_id,
+            text="<b>❌ Payment Rejected!</b>\n\nAapki bheji gayi Transaction ID verify nahi ho payi hai. Agar aapne sahi payment ki hai, toh please Admin @{} se contact karein.".format(ADMIN_USER)
+        )
+    except Exception as e:
+        print(f"User Notify Error: {e}")
+
+    # Admin Log Update
+    await query.message.edit_text(f"❌ <b>Rejected!</b>\nUser ID: <code>{user_id}</code>\nStatus: Payment Declined")
+    await query.answer("User Rejected!", show_alert=True)
