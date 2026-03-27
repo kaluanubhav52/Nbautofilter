@@ -28,11 +28,11 @@ BATCH_FILES = {}
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     bot_id = client.me.id
-    if EMOJI_MODE:
-        try:
-            await message.react(emoji=random.choice(REACTIONS))
-        except Exception:
-            pass
+    try:
+        await message.react(emoji=random.choice(REACTIONS), big=True)
+    except:
+        await message.react(emoji="⚡️")
+        pass
     maintenance_mode = await db.get_maintenance_status(bot_id)
     if maintenance_mode and message.from_user.id not in ADMINS:
         await message.reply_text("ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴜɴᴅᴇʀ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ 🛠️. ɪ ᴡɪʟʟ ʙᴇ ʙᴀᴄᴋ ꜱᴏᴏɴ 🔜")
