@@ -1,33 +1,45 @@
+# --- [Core Telegram Library] ---
 kurigram
 tgcrypto
+
+# --- [Database & Model] ---
 pymongo[srv]==4.11.1
 motor==3.7.0
 marshmallow==3.26.1
 umongo
-requests
-bs4
-git+https://github.com/NBBotz/IMDBKit.git@main
-shortzy
-pytz
+dnspython==2.6.1
+
+# --- [Web Server & Deployment] ---
 aiohttp
-opencv-python-headless==4.8.1.78
+gunicorn
+uvloop
+requests
 python-dotenv==0.21.1
-speedtest
-humanize
+python-decouple
+jinja2
+
+# --- [Media & Image Processing] ---
 Pillow
-psutil
+opencv-python-headless==4.8.1.78
+ffmpeg-python==0.2.0
 numpy
-wheel
+
+# --- [Utilities & Tools] ---
+pytz
+bs4
+shortzy
+speedtest-cli
+humanize
+psutil
 ujson
 wget
 aiofiles
-dnspython==2.6.1
-python-decouple
-ffmpeg-python==0.2.0
-jinja2
 fuzzywuzzy
 python-Levenshtein==0.27.3
 
-# --- [IMPORTANT] QR & Manual Payment Ke Liye Add Karein ---
+# --- [External Repos] ---
+git+https://github.com/NBBotz/IMDBKit.git@main
+
+# --- [Payments & Async] ---
 segno==1.6.1
 asyncio
