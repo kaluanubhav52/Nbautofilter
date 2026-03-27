@@ -198,40 +198,6 @@ Premium lene ke baad aapko milenge:
 <b>🌟 ᴘʀᴇᴍɪᴜᴍ ᴘʟᴀɴs:</b>
 Yahan se aap apna pasandida plan select kar sakte hain. Payment karne ke liye kisi bhi ek plan par click karein:"""
 
-    # --- 3. QR Code Page ---
-    QR_TEXT = """<b>✅ sᴄᴀɴ & ᴘᴀʏ ₹{}</b>
-
-<b>ᴜᴘɪ ɪᴅ:</b> <code>{}</code>
-
-👇 <b>sᴛᴇᴘs:</b>
-1. Upar diye gaye QR ko scan karein ya UPI ID copy karein.
-2. Payment karne ke baad niche <b>'✅ I Have Paid'</b> button par click karein.
-
-❌ Process rokne ke liye /cancel type karein."""
-
-    # --- 4. UTR Verification (ForceReply Text) ---
-    ASK_UTR_TEXT = """<b>📥 sᴛᴇᴘ 2: ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ</b>
-
-Apna 12-digit <b>Transaction ID / UTR ID</b> yahan reply karein jo aapke payment app (GPay/PhonePe/Paytm) mein dikh raha hai.
-
-⚠️ <i>Galat ID bhejne par aapka account ban ho sakta hai.</i>"""
-
-    # --- 5. Invalid UTR Alert ---
-    INVALID_UTR_TEXT = """<b>❌ ɪɴᴠᴀʟɪᴅ ᴛʀᴀɴsᴀᴄᴛɪᴏɴ ɪᴅ!</b>
-
-Aapne jo ID bheji hai wo sahi nahi hai. UPI Transaction ID hamesha <b>12-digit ka number</b> hota hai.
-
-Kripya sahi ID dobara reply karein ya /cancel se bahar nikal jayein."""
-
-    # --- 6. Final Submission Success ---
-    SUBMITTED_TEXT = """<b>✅ ɪᴅ ʀᴇᴄᴇɪᴠᴇᴅ!</b>
-
-Aapka payment verification ke liye bhej diya gaya hai. Admin verify karke aapko 1-2 ghante mein notify kar denge. Intezar karein!"""
-
-    # --- 7. Cancel Process ---
-    CANCEL_TEXT = """<b>❌ ᴘʀᴏᴄᴇss ᴄᴀɴᴄᴇʟʟᴇᴅ!</b>
-
-Aapne payment process rok diya hai. Agar aap dobara shuru karna chahte hain toh /plan type karein."""
 
     # --- 8. Admin Log Text ---
     ADMIN_LOG_TEXT = """<b>💰 ɴᴇᴡ ᴘᴀʏᴍᴇɴᴛ ᴀʟᴇʀᴛ</b>
