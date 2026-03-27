@@ -12,7 +12,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidD
 from Script import script
 import pyrogram
 from info import *
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo, ForceReply, ReplyKeyboardRemove
 from pyrogram import Client, filters, enums
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import *
@@ -713,32 +713,39 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data.startswith("gen_qr_"):
         # QR Code Generator with Amount
-        amount = int(query.data.split("_")[2])
-        upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
-        
-        # Memory mein QR banana (segno use karke)
-        qr_img = segno.make(upi_url)
-        out = io.BytesIO()
-        qr_img.save(out, kind='png', scale=10)
-        out.seek(0)
-        
-        btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
-               [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
-        
-        await query.message.edit_media(
-            media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
+        try:
+            amount = int(query.data.split("_")[2])
+            upi_url = f"upi://pay?pa={UPI_ID}&pn={RECEIVER_NAME}&am={amount}&cu=INR"
+            
+            # Memory mein QR banana
+            qr_img = segno.make(upi_url)
+            out = io.BytesIO()
+            qr_img.save(out, kind='png', scale=10)
+            out.seek(0)
+            
+            btn = [[InlineKeyboardButton('✅ I Have Paid', callback_data=f"paid_{amount}")],
+                   [InlineKeyboardButton('⇋ Back ⇋', callback_data='buy_info')]]
+            
+            await query.message.edit_media(
+                media=InputMediaPhoto(media=out, caption=script.QR_TEXT.format(amount, UPI_ID)),
+                reply_markup=InlineKeyboardMarkup(btn)
+            )
+        except Exception as e:
+            print(f"QR Error: {e}")
 
     elif query.data.startswith("paid_"):
         # "I Have Paid" dabane par UTR mangna
-        amount = query.data.split("_")[1]
-        await query.message.reply_text(
-            text=script.ASK_UTR_TEXT,
-            reply_markup=ForceReply(selective=True)
-        )
-        await query.answer("Please reply with your 12-digit UTR ID", show_alert=False)
-		
+        try:
+            amount = query.data.split("_")[1]
+            # [FIX] ForceReply yahan tabhi kaam karega jab upar import ho
+            await query.message.reply_text(
+                text=script.ASK_UTR_TEXT,
+                reply_markup=ForceReply(selective=True)
+            )
+            await query.answer("Please reply with your 12-digit UTR ID", show_alert=False)
+        except Exception as e:
+            print(f"Paid Button Error: {e}")
+
     elif query.data == "earn":
         try:
             btn = [[ 
