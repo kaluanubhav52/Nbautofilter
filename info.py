@@ -80,6 +80,22 @@ SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "")
 TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "1200"))
 THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "54000"))
 
+# --- 2. UPI & Payment Settings ---
+UPI_ID = "yourname@bank"           # Apna UPI ID (e.g. 9876543210@paytm)
+RECEIVER_NAME = "My Bot Premium"   # Payment app mein jo naam dikhega
+ADMIN_USER = "YourUsername"        # Bina @ ke (User ko reject hone par dikhega)
+
+
+# --- 4. Automatic Premium Plans ---
+# Format: { Amount_INR : "Duration_Text" }
+# Bot automatically inke buttons bana dega
+PREMIUM_PLANS = {
+    15: "7 Days",
+    45: "30 Days",
+    150: "90 Days",
+    500: "Lifetime"
+}
+
 MOVIE_UPDATE_NOTIFICATION = bool(environ.get("MOVIE_UPDATE_NOTIFICATION", False))
 NO_RESULTS_MSG = bool(environ.get("NO_RESULTS_MSG", True))
 MAX_B_TN = environ.get("MAX_B_TN", "8")
