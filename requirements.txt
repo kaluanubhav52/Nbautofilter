@@ -1,4 +1,5 @@
-pyrofork==2.3.69
+# --- Aapki Existing Libraries ---
+Pyrofork==2.3.69
 tgcrypto-pyrofork
 pymongo[srv]==4.11.1
 motor==3.7.0
@@ -8,7 +9,6 @@ requests
 bs4
 git+https://github.com/NBBotz/IMDBKit.git@main
 shortzy
-datetime
 pytz
 aiohttp
 opencv-python-headless==4.8.1.78
@@ -28,3 +28,7 @@ ffmpeg-python==0.2.0
 jinja2
 fuzzywuzzy
 python-Levenshtein==0.27.3
+
+# --- [IMPORTANT] QR & Manual Payment Ke Liye Add Karein ---
+segno==1.6.1
+asyncio
