@@ -30,15 +30,14 @@ pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 def ping_loop():
     while True:
         try:
+            # 120 second ki jagah 600 second (10 min) karein
+            time.sleep(600) 
             r = requests.get(URL, timeout=10)
-            if r.status_code == 200:
-                LOGGER.info("✅ Ping Successful")
-            else:
+            # Sirf fail hone par log dikhayein, success par nahi
+            if r.status_code != 200:
                 LOGGER.error(f"⚠️ Ping Failed: {r.status_code}")
-        except Exception as e:
-            LOGGER.error(f"❌ Exception During Ping: {e}")
-        time.sleep(120)
-
+        except:
+            pass
 
 if URL:
     threading.Thread(target=ping_loop, daemon=True).start()
