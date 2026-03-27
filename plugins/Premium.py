@@ -8,13 +8,7 @@ from utils import get_seconds, temp
 from database.users_chats_db import db 
 import asyncio
 from pyrogram import Client, filters, enums
-from pyrogram.types import (
-    InlineKeyboardButton, 
-    InlineKeyboardMarkup, 
-    InputMediaPhoto, 
-    ForceReply, 
-    ReplyKeyboardRemove
-)
+from pyrogram.types import ForceReply, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import *
 from logging_helper import LOGGER
@@ -204,16 +198,19 @@ async def paid_handler(client, query):
     await query.answer()
 
 # --- 5. [CRITICAL] /cancel Command ---
-@Client.on_message(filters.command("cancel") & filters.private)
+# Iska group humne -1 rakha hai taaki ye search se pehle trigger ho
+@Client.on_message(filters.command("cancel") & filters.private, group=-1)
 async def cancel_handler(client, message):
-    # Ye user ko current state se bahar nikal dega
     await message.reply_text(
         text=script.CANCEL_TEXT,
         reply_markup=ReplyKeyboardRemove()
     )
+    # Ye line zaroori hai taaki niche wale filters trigger na hon
+    message.stop_propagation()
 
 # --- 6. UTR Submission & 12-Digit Check ---
-@Client.on_message(filters.private & filters.text & filters.reply, group=1)
+# Group ko -2 rakha hai (High Priority)
+@Client.on_message(filters.private & filters.text & filters.reply, group=-2)
 async def handle_utr_submission(client, message):
     # Check if reply is to UTR request
     if message.reply_to_message and "Step 2: Verification" in message.reply_to_message.text:
@@ -225,9 +222,11 @@ async def handle_utr_submission(client, message):
                 text=script.INVALID_UTR_TEXT,
                 reply_markup=ForceReply(selective=True)
             )
+            # Stop propagation yahan bhi zaroori hai taaki galat ID par bhi search na ho
+            message.stop_propagation()
             return
 
-        # Admin Logs with Approve/Reject
+        # Admin Logs
         user_id = message.from_user.id
         await client.send_message(
             chat_id=PREMIUM_LOGS,
@@ -238,67 +237,51 @@ async def handle_utr_submission(client, message):
             ]])
         )
         await message.reply_text(script.SUBMITTED_TEXT, reply_markup=ReplyKeyboardRemove())
+        
+        # [VERY IMPORTANT] Iske baad bot kuch aur nahi karega (Search Stop)
         message.stop_propagation()
 
 # --- 7. Admin Actions: Approve & Reject Handler ---
 
 @Client.on_callback_query(filters.regex(r"^(add_p|rej_p)_(\d+)"))
 async def admin_approval_callback(client, query):
-    # Callback data se action aur user_id nikalna
-    action = query.data.split("_")[0] # 'add' ya 'rej'
-    user_id = int(query.data.split("_")[2]) # User ID
+    # Action: add_p ya rej_p | User_ID: (\d+)
+    action = query.data.split("_")[0] 
+    user_id = int(query.data.split("_")[2]) 
     admin_name = query.from_user.mention
 
     if action == "add":
-        # 30 Days ki expiry set karna (Aap ise plans ke hisaab se change bhi kar sakte hain)
-        days = 30 
-        expiry_date = datetime.datetime.now() + datetime.timedelta(days=days)
+        # Aapne kaha tha expiry pehle se set hai, 
+        # Toh bas user ko active karne ka message aur database update:
+        expiry_days = 30 # Default 30, ya plans ke hisaab se change karein
+        expiry_date = datetime.datetime.now() + datetime.timedelta(days=expiry_days)
         
-        # Database Update (Aapka existing function)
         try:
+            # Database update (Aapka existing method use karein)
             await db.update_user({"id": user_id, "expiry_time": expiry_date})
             
-            # User ko message bhejna
+            # User ko notify karein
             await client.send_message(
                 chat_id=user_id,
-                text=f"<b>🎉 ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴛɪᴠᴀᴛᴇᴅ!</b>\n\n"
-                     f"✅ Aapka payment verify ho gaya hai.\n"
-                     f"⏳ ᴅᴜʀᴀᴛɪᴏɴ: {days} Days\n"
-                     f"📅 ᴇxᴘɪʀʏ: {expiry_date.strftime('%d-%m-%Y')}\n\n"
-                     f"Enjoy high-speed access!"
+                text=f"<b>🎉 ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴛɪᴠᴀᴛᴇᴅ!</b>\n\nAapka payment verify ho gaya hai.\n⏳ ᴠᴀʟɪᴅɪᴛʏ: {expiry_days} Days\n📅 ᴇxᴘɪʀʏ: {expiry_date.strftime('%d-%m-%Y')}"
             )
             
-            # Admin Log Update
+            # Admin log update karein
             await query.message.edit_text(
-                f"<b>✅ Approved By:</b> {admin_name}\n"
-                f"👤 <b>User ID:</b> <code>{user_id}</code>\n"
-                f"📅 <b>Expiry:</b> {expiry_date.strftime('%d-%m-%Y')}"
+                f"✅ <b>Approved By:</b> {admin_name}\n👤 <b>User:</b> <code>{user_id}</code>\n📅 <b>Expiry:</b> {expiry_date.strftime('%d-%m-%Y')}"
             )
-            await query.answer("User Approved Successfully!", show_alert=True)
+            await query.answer("User Approved!", show_alert=True)
             
         except Exception as e:
-            await query.answer(f"Error: {e}", show_alert=True)
+            await query.answer(f"Database Error: {e}", show_alert=True)
 
     elif action == "rej":
         try:
-            # User ko Notify karna ki reject ho gaya
             await client.send_message(
                 chat_id=user_id,
-                text=f"<b>❌ ᴘᴀʏᴍᴇɴᴛ ʀᴇᴊᴇᴄᴛᴇᴅ!</b>\n\n"
-                     f"Aapka UTR/Payment verify nahi ho paya.\n"
-                     f"Agar aapne sahi payment kiya hai toh @{ADMIN_USER} se contact karein."
+                text=f"<b>❌ ᴘᴀʏᴍᴇɴᴛ ʀᴇᴊᴇᴄᴛᴇᴅ!</b>\n\nAapka UTR verify nahi ho paya. Sahi details ke saath dobara try karein ya @{ADMIN_USER} se contact karein."
             )
-            
-            # Admin Log Update
-            await query.message.edit_text(
-                f"<b>❌ Rejected By:</b> {admin_name}\n"
-                f"👤 <b>User ID:</b> <code>{user_id}</code>\n"
-                f"⚠️ Status: Rejected"
-            )
+            await query.message.edit_text(f"❌ <b>Rejected By:</b> {admin_name}\n👤 <b>User:</b> <code>{user_id}</code>")
             await query.answer("User Rejected!", show_alert=True)
-            
         except Exception as e:
             await query.answer(f"Error: {e}", show_alert=True)
-				
-
-
