@@ -9,9 +9,9 @@ import requests
 import pytz
 from aiohttp import web
 from PIL import Image 
-from pyrogram import Client, idle, __version__
-from pyrogram.raw.all import layer
-import pyrogram.utils
+from hydrogram import Client, idle, __version__
+from hydrogram.raw.all import layer
+import hydrogram.utils
 from database.ia_filterdb import Media, Media2
 from database.users_chats_db import db
 from info import *
@@ -25,7 +25,7 @@ from logging_helper import LOGGER
 
 botStartTime = time.time()
 
-pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
+hydrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
 def ping_loop():
     while True:
