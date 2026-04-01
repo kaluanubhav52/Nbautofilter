@@ -1,9 +1,9 @@
-from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, MessageNotModified
+from hydrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, MessageNotModified
 from info import  *
 from imdbkit import IMDBKit 
 import asyncio
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram import enums
+from hydrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from hydrogram import enums
 from typing import Union, Optional, Dict, Any
 from Script import script
 import pytz
