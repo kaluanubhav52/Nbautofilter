@@ -1,4 +1,4 @@
-aiogram
+hydrogram 
 tgcrypto
 
 # --- [Database & Model] ---
