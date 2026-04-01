@@ -1,5 +1,4 @@
-# --- [Core Telegram Library] ---
-kurigram
+aiogram
 tgcrypto
 
 # --- [Database & Model] ---
