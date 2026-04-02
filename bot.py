@@ -6,7 +6,7 @@ import uvloop
 from datetime import date, datetime
 from pathlib import Path
 
-# Sabse pehle loop policy set karein taaki imports crash na ho
+# --- LOOP POLICY SETUP (CRITICAL FOR RENDER/HYDROGRAM) ---
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 import importlib.util
@@ -30,6 +30,7 @@ from logging_helper import LOGGER
 
 botStartTime = time.time()
 
+# Channel ID range fix
 hydrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
 def ping_loop():
@@ -86,11 +87,16 @@ async def SilentXBotz_start():
         LOGGER.error("DATABASE_URI2 is missing but MULTIPLE_DB is True!")
         sys.exit(1)
     
-    LOGGER.info("Initializing Your Bot!")
+    LOGGER.info("Initializing Your Bot...")
     await SilentX.start()
     
-    bot_info = await SilentX.get_me()
-    SilentX.username = "@" + bot_info.username
+    # User info load karna zaroori hai message bhejte waqt
+    me = await SilentX.get_me()
+    temp.ME = me.id
+    temp.U_NAME = me.username
+    temp.B_NAME = me.first_name
+    temp.B_LINK = me.mention
+    SilentX.username = "@" + me.username
     
     await initialize_clients()
     silentx_plugins_handler(SilentX)
@@ -107,18 +113,34 @@ async def SilentXBotz_start():
     except Exception as e:
         LOGGER.error(f"DB Error: {e}")
 
-    temp.ME, temp.U_NAME = bot_info.id, bot_info.username
-    temp.B_NAME, temp.B_LINK = bot_info.first_name, bot_info.mention
+    # --- RESTART LOG LOGIC ---
+    tz = pytz.timezone("Asia/Kolkata")
+    today = date.today()
+    now = datetime.now(tz)
+    time_str = now.strftime("%H:%M:%S %p")
     
+    if LOG_CHANNEL:
+        try:
+            await SilentX.send_message(
+                chat_id=LOG_CHANNEL,
+                text=script.RESTART_TXT.format(temp.B_LINK, today, time_str)
+            )
+            LOGGER.info("✅ Restart message sent to Log Channel.")
+        except Exception as e:
+            LOGGER.error(f"❌ Failed to send restart log: {e}")
+
     asyncio.create_task(check_expired_premium(SilentX))
-    LOGGER.info(f"✅ {bot_info.first_name} started on {SilentX.username}")
+    LOGGER.info(f"✅ {me.first_name} is online on {SilentX.username}!")
     
-    # Web Server for Render Port Binding
-    web_app = await web_server()
-    app_runner = web.AppRunner(web_app)
-    await app_runner.setup()
-    bind_address = "0.0.0.0"
-    await web.TCPSite(app_runner, bind_address, PORT).start()
+    # --- WEB SERVER FOR RENDER (PORT BINDING) ---
+    try:
+        web_app = await web_server()
+        app_runner = web.AppRunner(web_app)
+        await app_runner.setup()
+        await web.TCPSite(app_runner, "0.0.0.0", PORT).start()
+        LOGGER.info(f"🌐 Web Server is running on Port {PORT}")
+    except Exception as e:
+        LOGGER.warning(f"⚠️ Web Server failed: {e}")
 
     await idle()
 
