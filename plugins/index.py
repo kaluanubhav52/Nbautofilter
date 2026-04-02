@@ -5,7 +5,7 @@ from hydrogram import Client, filters, enums
 from hydrogram.errors import FloodWait
 from hydrogram.errors.exceptions.bad_request_400 import ChannelInvalid, ChatAdminRequired, UsernameInvalid, UsernameNotModified
 from info import ADMINS, INDEX_REQ_CHANNEL as LOG_CHANNEL
-from hydrogram.ia_filterdb import save_file
+from database.ia_filterdb import save_file
 from hydrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils import temp, get_readable_time
 from math import ceil
