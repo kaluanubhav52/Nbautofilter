@@ -13,10 +13,10 @@ from utils import clean_filename
 from logging_helper import LOGGER
 from typing import Optional, Dict, Any
 from datetime import datetime
-from pyrogram import Client, filters
+from hydrogram import Client, filters
 from database.ia_filterdb import save_file
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.enums import ParseMode
+from hydrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from hydrogram.enums import ParseMode
 
 CAPTION_LANGUAGES = ["Bhojpuri", "Hindi", "Bengali", "Tamil", "English", "Bangla", "Telugu", "Malayalam", "Kannada", "Marathi", "Punjabi", "Bengoli", "Gujrati", "Korean", "Gujarati", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese", "Russian", "Japanese", "Odia", "Assamese", "Urdu"]
 
