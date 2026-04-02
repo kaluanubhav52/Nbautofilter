@@ -8,13 +8,13 @@ import pytz
 from datetime import datetime, timedelta, date, time
 from database.users_chats_db import db
 from database.refer import referdb
-from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
+from hydrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
-import pyrogram
+import hydrogram
 from info import *
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo, ForceReply, ReplyKeyboardRemove
-from pyrogram import Client, filters, enums
-from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
+from hydrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto, WebAppInfo, ForceReply, ReplyKeyboardRemove
+from hydrogram import Client, filters, enums
+from hydrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
 from utils import *
 from fuzzywuzzy import process
 from database.users_chats_db import db
