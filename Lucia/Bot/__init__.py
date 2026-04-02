@@ -1,4 +1,4 @@
-from pyrogram import Client
+from hydrogram import Client
 from info import *
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
