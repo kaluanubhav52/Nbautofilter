@@ -1,6 +1,6 @@
 import asyncio
 from info import *
-from pyrogram import Client
+from hydrogram import Client
 from Lucia.util.config_parser import TokenParser
 from . import multi_clients, work_loads, SilentX
 from logging_helper import LOGGER
