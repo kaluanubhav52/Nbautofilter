@@ -2,7 +2,7 @@ from hydrogram import Client
 from info import *
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
-from pyrogram import types
+from hydrogram import types
 from aiohttp import web
 from logging_helper import LOGGER
 
