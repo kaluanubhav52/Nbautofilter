@@ -1,10 +1,10 @@
 import time
 import asyncio
-from pyrogram import Client, filters
+from hydrogram import Client, filters
 import platform
 import os
 import shutil
-from pyrogram.types import BotCommand
+from hydrogram.types import BotCommand
 from info import ADMINS, Bot_cmds
 
 CMD = ["/", "."]  
