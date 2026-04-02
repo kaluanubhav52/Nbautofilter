@@ -3,7 +3,7 @@ import asyncio
 from hydrogram import enums
 from logging_helper import LOGGER 
 from database.users_chats_db import db
-from pyrogram.errors import UserNotParticipant, ChatAdminRequired
+from hydrogram.errors import UserNotParticipant, ChatAdminRequired
 
 CHANNEL_CACHE = {}
 CACHE_TTL = 3600
