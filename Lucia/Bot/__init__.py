@@ -1,3 +1,5 @@
+import asyncio
+import uvloop
 from hydrogram import Client
 from info import *
 from utils import temp
@@ -5,6 +7,16 @@ from typing import Union, Optional, AsyncGenerator
 from hydrogram import types
 from aiohttp import web
 from logging_helper import LOGGER
+
+# --- Loop Fix Start ---
+# Ye lines initialize hone se pehle loop setup kar dengi
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+try:
+    loop = asyncio.get_event_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+# --- Loop Fix End ---
 
 class SilentXBot(Client):
     def __init__(self):
@@ -17,35 +29,13 @@ class SilentXBot(Client):
             plugins={"root": "plugins"},
             sleep_threshold=5,
         )
+
     async def iter_messages(
         self,
         chat_id: Union[int, str],
         limit: int,
         offset: int = 0,
     ) -> Optional[AsyncGenerator["types.Message", None]]:
-        """Iterate through a chat sequentially.
-        This convenience method does the same as repeatedly calling :meth:`~pyrogram.Client.get_messages` in a loop, thus saving
-        you from the hassle of setting up boilerplate code. It is useful for getting the whole chat messages with a
-        single call.
-        Parameters:
-            chat_id (``int`` | ``str``):
-                Unique identifier (int) or username (str) of the target chat.
-                For your personal cloud (Saved Messages) you can simply use "me" or "self".
-                For a contact that exists in your Telegram address book you can use his phone number (str).
-                
-            limit (``int``):
-                Identifier of the last message to be returned.
-                
-            offset (``int``, *optional*):
-                Identifier of the first message to be returned.
-                Defaults to 0.
-        Returns:
-            ``Generator``: A generator yielding :obj:`~pyrogram.types.Message` objects.
-        Example:
-            .. code-block:: python
-                for message in app.iter_messages("pyrogram", 1, 15000):
-                    print(message.text)
-        """
         current = offset
         while True:
             new_diff = min(200, limit - current)
@@ -56,6 +46,7 @@ class SilentXBot(Client):
                 yield message
                 current += 1
       
+# Ab ye error nahi dega kyunki upar loop set ho chuka hai
 SilentX = SilentXBot()
 
 multi_clients = {}
