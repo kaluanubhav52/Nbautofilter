@@ -1,12 +1,12 @@
-from pyrogram import Client, filters, enums
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
+from hydrogram import Client, filters, enums
+from hydrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from hydrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
 from info import *
 from database.users_chats_db import db, db2
 from database.ia_filterdb import Media, Media2, db as db_stats, db2 as db2_stats
 from utils import get_size, temp, get_settings, get_readable_time
 from Script import script
-from pyrogram.errors import ChatAdminRequired
+from hydrogram.errors import ChatAdminRequired
 import asyncio
 import psutil
 import time
