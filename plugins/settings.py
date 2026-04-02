@@ -1,7 +1,7 @@
 import asyncio
-from pyrogram import Client, filters, enums
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
-from pyrogram.errors import UserIsBlocked, PeerIdInvalid, MessageNotModified, FloodWait
+from hydrogram import Client, filters, enums
+from hydrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
+from hydrogram.errors import UserIsBlocked, PeerIdInvalid, MessageNotModified, FloodWait
 from info import *
 from utils import get_settings, save_group_settings, delete_group_setting, MAX_B_TN, temp, is_check_admin
 from Script import script
