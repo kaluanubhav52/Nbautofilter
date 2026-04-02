@@ -1,5 +1,5 @@
-from pyrogram import Client, filters, enums
-from pyrogram.types import ChatJoinRequest
+from hydrogram import Client, filters, enums
+from hydrogram.types import ChatJoinRequest
 from database.users_chats_db import db
 from info import ADMINS, AUTH_REQ_CHANNEL
 
