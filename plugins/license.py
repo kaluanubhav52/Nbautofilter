@@ -9,7 +9,7 @@ import string
 from os import environ
 from info import ADMINS, PREMIUM_LOGS
 from datetime import datetime, timedelta
-from pyrogram import Client, filters
+from hydrogram import Client, filters
 from database.users_chats_db import db
 from utils import *
 
