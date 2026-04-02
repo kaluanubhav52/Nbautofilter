@@ -4,12 +4,12 @@ from logging_helper import LOGGER
 from info import *
 from typing import Dict, Union
 from Lucia.Bot import work_loads
-from pyrogram import Client, utils, raw
+from hydrogram import Client, utils, raw
 from .file_properties import get_file_ids
-from pyrogram.session import Session, Auth
-from pyrogram.errors import AuthBytesInvalid
+from hydrogram.session import Session, Auth
+from hydrogram.errors import AuthBytesInvalid
 from Lucia.server.exceptions import FIleNotFound
-from pyrogram.file_id import FileId, FileType, ThumbnailSource
+from hydrogram.file_id import FileId, FileType, ThumbnailSource
 
 
 class ByteStreamer:
